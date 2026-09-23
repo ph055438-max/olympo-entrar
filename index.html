@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar no servidor · Olympo</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: dark; --ouro:#ffd24a; --roxo:#f47fff; --fundo:#0a0822; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+    background: radial-gradient(1200px 600px at 70% -10%, #3a1050, var(--fundo));
+    color: #fff; font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+  }
+  .caixa { width: 100%; max-width: 420px; text-align: center; }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--ouro);
+       letter-spacing: .5px; }
+  .sub { color: #c9bede; margin: 0 0 22px; font-size: 14px; }
+  .taca { font-size: 46px; line-height: 1; margin-bottom: 10px; }
+  .alvo { font-size: 19px; font-weight: 700; margin: 0 0 2px; }
+  code {
+    display: block; margin: 14px 0; padding: 12px 10px; border-radius: 10px;
+    background: #ffffff14; border: 1px solid #ffffff22; color: var(--ouro);
+    font-size: 15px; word-break: break-all; cursor: pointer;
+  }
+  .botao {
+    display: block; padding: 15px; border-radius: 12px; font-weight: 700;
+    text-decoration: none; background: linear-gradient(90deg,#2ecc71,#27ae60);
+    color: #06210f; border: 0; width: 100%; font-size: 16px; cursor: pointer;
+    font-family: inherit;
+  }
+  .arena {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; padding: 14px 16px; margin-bottom: 10px; border-radius: 12px;
+    background: #ffffff10; border: 1px solid #ffffff20; color: #fff;
+    text-decoration: none; text-align: left;
+  }
+  .arena:hover { background: #ffffff1c; border-color: var(--ouro); }
+  .arena span { color: #c9bede; font-size: 13px; }
+  .nota { color: #9c8fb5; font-size: 12.5px; margin-top: 18px; }
+  .copiado { color: #2ecc71; }
+</style>
+</head>
+<body>
+<div class="caixa">
+  <div class="taca">🏆</div>
+  <h1>OLYMPO</h1>
+  <p class="sub">Entrar no servidor de CS2</p>
+
+  <div id="uma" hidden>
+    <p class="alvo" id="rotulo"></p>
+    <p class="sub" id="abrindo">abrindo o CS2…</p>
+    <button class="botao" id="denovo">ENTRAR AGORA</button>
+    <code id="connect" title="clique para copiar"></code>
+    <p class="nota">Não abriu? Copie a linha acima e cole no console do
+      CS2 (tecla <b>~</b>).</p>
+  </div>
+
+  <div id="lista" hidden>
+    <p class="sub">Escolha a arena:</p>
+      <a class="arena" href="?arena=firegames"><b>⚔️・ARENA I</b><span>177.54.146.23:25022</span></a>
+      <a class="arena" href="?arena=firegames2"><b>⚔️・ARENA II</b><span>103.14.27.41:25108</span></a>
+  </div>
+
+  <p class="nota">Gerado em 23/09/2026 01:14 · se o endereço mudar, esta página
+    é gerada de novo pelo Montes.</p>
+</div>
+<script>
+const ARENAS = {"firegames": {"rotulo": "⚔️・ARENA I", "endereco": "177.54.146.23:25022"}, "firegames2": {"rotulo": "⚔️・ARENA II", "endereco": "103.14.27.41:25108"}};
+const chave = new URLSearchParams(location.search).get("arena") || "";
+const alvo = Object.prototype.hasOwnProperty.call(ARENAS, chave)
+  ? ARENAS[chave] : null;
+const teste = new URLSearchParams(location.search).has("teste");
+
+function entra() {
+  location.href = "steam://connect/" + alvo.endereco;
+}
+
+if (alvo) {
+  document.getElementById("uma").hidden = false;
+  document.getElementById("rotulo").textContent = alvo.rotulo;
+  const linha = document.getElementById("connect");
+  linha.textContent = "connect " + alvo.endereco;
+  linha.onclick = () => navigator.clipboard
+    .writeText("connect " + alvo.endereco)
+    .then(() => { linha.textContent = "copiado!"; linha.className = "copiado";
+                  setTimeout(() => { linha.textContent = "connect " +
+                    alvo.endereco; linha.className = ""; }, 1200); })
+    .catch(() => {});
+  document.getElementById("denovo").onclick = entra;
+  // O navegador pode engolir a abertura sem um clique. Então tenta na
+  // hora E deixa o botão: quem caiu no bloqueio entra no segundo toque.
+  if (!teste) { entra(); }
+  else { document.getElementById("abrindo").textContent = "(modo teste)"; }
+} else {
+  document.getElementById("lista").hidden = false;
+}
+</script>
+</body>
+</html>
